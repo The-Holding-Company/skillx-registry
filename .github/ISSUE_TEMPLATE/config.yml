@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How to sign and host your skill
+    url: https://skillx.md/publish.html
+    about: Do this first — submissions are verified against your live, signed SKILL.md.
+  - name: skillx.md marketplace
+    url: https://skillx.md/skills.html
+    about: Browse currently listed skills.

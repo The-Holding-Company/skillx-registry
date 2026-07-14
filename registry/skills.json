@@ -1,0 +1,36 @@
+{
+  "$schema": "https://skillx.md/schemas/skills.v1.json",
+  "updated_at": "2026-07-12T15:22:36Z",
+  "skills": [
+    {
+      "name": "skillx-verify",
+      "description": "Verify the signature and publisher identity of any agent skill (SKILL.md) before installing or executing it.",
+      "version": "1.0.0",
+      "url": "https://skillx.md/skills/skillx-verify/SKILL.md",
+      "sig": "https://skillx.md/skills/skillx-verify/SKILL.md.sig",
+      "ard": "https://skillx.md/skills/skillx-verify/ard.json",
+      "homepage": "https://skillx.md/skills/skillx-verify/",
+      "sha256": "0cd2ff8a6ead4a8bee16e3d7125ad0cf296e645baa2caa55da174df2498933e7",
+      "publisher": {
+        "kid": "did:web:skillx.md#skillx-2026",
+        "handle": "/skillx/registry",
+        "verified": true
+      },
+      "log_seq": 2
+    },
+    {
+      "name": "user-agency-web-identity",
+      "description": "Read and act on portable identity surfaces at username.md and about-me.md.",
+      "version": "1.0.0",
+      "url": "https://username.md/SKILL.md",
+      "sig": "https://username.md/SKILL.md.sig",
+      "sha256": "2dfef1e15468e04d56985b06ce2c7a6dff3b66f6ad4af5f4c8222755dcf15d8a",
+      "publisher": {
+        "kid": "did:web:username.md#skillx-2026",
+        "handle": "/username/registry",
+        "verified": true
+      },
+      "log_seq": 1
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+name: Submit a skill
+description: List your signed skill in the skillx.md registry. Sign and host it first — see https://skillx.md/publish.html
+title: "[submit] "
+labels: ["skill-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before you submit** — your skill must already be signed and hosted on your domain
+        ([how to sign](https://skillx.md/publish.html)):
+        - `https://your-domain/SKILL.md` and `SKILL.md.sig`
+        - `https://your-domain/.well-known/did.json` with your public key
+        - `python3 skillx.py verify --scan https://your-domain/SKILL.md` prints **VERIFIED**
+
+        When you submit, automation re-verifies your skill and opens a registry PR.
+        A maintainer review is the final gate. Listing is free.
+  - type: input
+    id: url
+    attributes:
+      label: Skill URL
+      description: HTTPS URL of your signed SKILL.md (the .sig must sit next to it)
+      placeholder: https://example.com/SKILL.md
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      value: "1.0.0"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Short description
+      description: One or two sentences shown on your marketplace listing.
+    validations:
+      required: true

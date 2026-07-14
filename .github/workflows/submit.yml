@@ -1,0 +1,100 @@
+name: Process skill submission
+
+# Triggered by the "Submit a skill" issue form. Re-verifies the skill at its
+# live URL and, on VERIFIED, opens a registry PR and comments on the issue.
+# Issue content is attacker-controlled: it must only ever reach steps via
+# env vars (never ${{ }} inside run:) to prevent shell injection.
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  submit:
+    if: contains(github.event.issue.labels.*.name, 'skill-submission')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+
+      - name: Parse issue form
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python3 - <<'EOF'
+          import os, re, json
+          body = os.environ["ISSUE_BODY"]
+          def field(h):
+              m = re.search(rf"### {h}\s*\n+(.*?)(?=\n### |\Z)", body, re.S)
+              return (m.group(1).strip() if m else "")
+          url, version, desc = field("Skill URL"), field("Version"), field("Short description")
+          if not re.match(r"^https://\S+$", url):
+              raise SystemExit(f"invalid or missing Skill URL: {url!r}")
+          if not re.match(r"^[0-9A-Za-z.+-]{1,32}$", version):
+              raise SystemExit(f"invalid version: {version!r}")
+          with open("/tmp/submission.json", "w") as f:
+              json.dump({"url": url, "version": version, "description": desc[:500]}, f)
+          print(f"parsed: {url} v{version}")
+          EOF
+
+      - name: Verify and stage registry entry
+        id: add
+        run: |
+          URL=$(python3 -c "import json;print(json.load(open('/tmp/submission.json'))['url'])")
+          VER=$(python3 -c "import json;print(json.load(open('/tmp/submission.json'))['version'])")
+          DESC=$(python3 -c "import json;print(json.load(open('/tmp/submission.json'))['description'])")
+          set +e
+          python3 scripts/add_entry.py --url "$URL" --description "$DESC" --version "$VER" \
+            | tee /tmp/add_entry.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          if [ "$rc" -eq 0 ]; then
+            python3 scripts/verify_registry.py | tee -a /tmp/add_entry.log
+          fi
+
+      - name: Open registry PR
+        if: steps.add.outputs.rc == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          NAME=$(python3 -c "import json;print(json.load(open('/tmp/add_entry_out.json'))['name'])")
+          SEQ=$(python3 -c "import json;print(json.load(open('/tmp/add_entry_out.json'))['seq'])")
+          git config user.name "skillx-registry-bot"
+          git config user.email "hello@holdingco.com"
+          BRANCH="submit/issue-$ISSUE"
+          git checkout -B "$BRANCH"
+          git add registry/skills.json log/transparency.jsonl
+          git commit -m "registry: $NAME (log seq $SEQ) via issue #$ISSUE"
+          git push -f origin "$BRANCH"
+          PR=$(gh pr list --head "$BRANCH" --json url -q '.[0].url')
+          if [ -z "$PR" ]; then
+            PR=$(gh pr create --title "registry: add $NAME (issue #$ISSUE)" \
+              --body-file /tmp/add_entry.log --head "$BRANCH")
+          fi
+          gh issue comment "$ISSUE" --body "✅ Verified. Registry PR opened: $PR — a maintainer review is the final gate. Verification output:
+          \`\`\`
+          $(cat /tmp/add_entry.log)
+          \`\`\`"
+
+      - name: Report failure
+        if: steps.add.outputs.rc != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE" --body "❌ Verification failed — nothing was staged. Fix and edit this issue to retry (editing re-runs the check). Output:
+          \`\`\`
+          $(tail -c 3000 /tmp/add_entry.log)
+          \`\`\`
+          Checklist: SKILL.md + SKILL.md.sig live on your domain, /.well-known/did.json serves the signing key, and \`skillx.py verify\` prints VERIFIED locally. Guide: https://skillx.md/publish.html"
+          exit 1
