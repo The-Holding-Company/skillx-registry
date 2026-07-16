@@ -54,10 +54,13 @@ scripts/add_entry.py       Turns a verified skill URL into a registry entry + lo
   `pull_request` CI because they're pushed with `GITHUB_TOKEN`; the submit
   workflow runs the full `verify_registry.py` pass itself and attaches the
   output to the PR. `workflow_dispatch` re-runs it on demand.
-- After merging, sync `registry/` and `log/` to
-  `landing-pages/sites/skillx.md/` so the live site serves them
-  (automation for this is tracked in
-  [HC-960](https://linear.app/holdingco11/issue/HC-960)).
+- Merged registry/log changes go live automatically: the
+  `sync-skillx-registry` workflow in `landing-pages` pulls this repo's
+  `main` every 30 minutes and deploys on change (`workflow_dispatch` it for
+  an instant sync). ([HC-960](https://linear.app/holdingco11/issue/HC-960))
+- The skillx.md publish-page form feeds the same pipeline: form →
+  webhook-nats-bridge → `skillx-submit-worker` (verify + content scan) →
+  a `skill-submission` issue here → the normal automation.
 
 Part of the User Agency Web (username.md · about-me.md · finger.md ·
 about-us.md · badge.md). CLI + spec source: `The-Holding-Company/skillx`.
