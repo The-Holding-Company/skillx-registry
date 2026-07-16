@@ -1,6 +1,6 @@
 {
   "$schema": "https://skillx.md/schemas/skills.v1.json",
-  "updated_at": "2026-07-12T15:22:36Z",
+  "updated_at": "2026-07-16T00:09:48Z",
   "skills": [
     {
       "name": "skillx-verify",
@@ -31,6 +31,19 @@
         "verified": true
       },
       "log_seq": 1
+    },
+    {
+      "name": "submission-smoke-test",
+      "description": "Dress rehearsal of the real bot-PR path after enabling the org Actions PR setting. The PR will be closed unmerged and the fixture branch deleted.",
+      "version": "1.0.1",
+      "url": "https://raw.githubusercontent.com/The-Holding-Company/skillx-registry/smoke-fixture/fixtures/smoke/SKILL.md",
+      "sig": "https://raw.githubusercontent.com/The-Holding-Company/skillx-registry/smoke-fixture/fixtures/smoke/SKILL.md.sig",
+      "sha256": "2067d32afd5829dc5d0260b5ab2e3cb0ec6df323fa5cbd087b9bfe037cdcb49b",
+      "publisher": {
+        "kid": "did:web:username.md#skillx-2026",
+        "verified": false
+      },
+      "log_seq": 3
     }
   ]
 }
