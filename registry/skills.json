@@ -1,7 +1,23 @@
 {
   "$schema": "https://skillx.md/schemas/skills.v1.json",
-  "updated_at": "2026-07-12T15:22:36Z",
+  "updated_at": "2026-07-27T00:41:21Z",
   "skills": [
+    {
+      "name": "adr-authoring",
+      "description": "Write a rigorous Architecture Decision Record (ADR) that captures a single significant decision, the alternatives weighed, the consequences accepted, and a concrete rollback path.",
+      "version": "1.0.0",
+      "url": "https://skillx.md/skills/adr-authoring/SKILL.md",
+      "sig": "https://skillx.md/skills/adr-authoring/SKILL.md.sig",
+      "ard": "https://skillx.md/skills/adr-authoring/ard.json",
+      "homepage": "https://skillx.md/skills/adr-authoring/",
+      "sha256": "aca2103a89ddcb67b2f316564cc4d03f124c8da2438670f703671adc1aba6582",
+      "publisher": {
+        "kid": "did:web:skillx.md#skillx-2026",
+        "handle": "/skillx/registry",
+        "verified": true
+      },
+      "log_seq": 3
+    },
     {
       "name": "skillx-verify",
       "description": "Verify the signature and publisher identity of any agent skill (SKILL.md) before installing or executing it.",
