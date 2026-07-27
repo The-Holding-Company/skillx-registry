@@ -6,10 +6,20 @@ on:
   push:
     branches: [main]
     paths: ["registry/**", "log/**"]
+  schedule:
+    # Daily drift monitor: re-verify every published artifact against its live
+    # host, catching bytes that changed after they were logged. This is the
+    # full sweep — kept OFF the PR/merge path so one publisher's dead host
+    # can't red-flag an unrelated publish.
+    - cron: "17 8 * * *"
   workflow_dispatch:
 
 jobs:
-  verify:
+  # PR/merge gate: only verify what THIS change touches, with retries so a
+  # first-party artifact still mid-deploy (cross-repo race) self-heals instead
+  # of flaking. INVALID is never retried.
+  gate:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,4 +36,27 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install cryptography
-      - run: python3 scripts/verify_registry.py
+      - name: Verify changed entries
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="origin/${GITHUB_BASE_REF}"
+          else
+            BASE="${{ github.event.before }}"
+          fi
+          python3 scripts/verify_registry.py --changed-only --base "$BASE" \
+            --retries 6 --retry-wait 20
+
+  # Scheduled/manual full sweep: verify every entry. Drift here is a real
+  # incident (a logged artifact's bytes changed), so this run failing is the
+  # signal to alert on.
+  full-sweep:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+      - name: Verify all entries (drift monitor)
+        run: python3 scripts/verify_registry.py --retries 3 --retry-wait 20
