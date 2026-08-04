@@ -1,6 +1,6 @@
 {
   "$schema": "https://skillx.md/schemas/skills.v1.json",
-  "updated_at": "2026-07-27T00:41:21Z",
+  "updated_at": "2026-08-04T20:32:36Z",
   "skills": [
     {
       "name": "adr-authoring",
@@ -47,6 +47,22 @@
         "verified": true
       },
       "log_seq": 1
+    },
+    {
+      "name": "glossary-keeper",
+      "description": "Build and maintain a living organizational glossary that humans and AI agents can cite — novel-term capture, deep-linkable anchors, and curated public builds that never leak internal vocabulary.",
+      "version": "1.0.0",
+      "url": "https://skillx.md/skills/glossary-keeper/SKILL.md",
+      "sig": "https://skillx.md/skills/glossary-keeper/SKILL.md.sig",
+      "ard": "https://skillx.md/skills/glossary-keeper/ard.json",
+      "homepage": "https://skillx.md/skills/glossary-keeper/",
+      "sha256": "6cf0d069661798711f164c32473b7b632e528ecf0c473a09cf65ab7c57580682",
+      "publisher": {
+        "kid": "did:web:skillx.md#skillx-2026",
+        "handle": "/skillx/registry",
+        "verified": true
+      },
+      "log_seq": 4
     }
   ]
 }
