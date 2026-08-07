@@ -28,6 +28,13 @@ Prefer raw git? Open the PR yourself: add one entry to
 (fields per [SPEC §5](https://skillx.md/spec.md)). CI re-verifies every
 entry either way.
 
+**Recommended packaging:** also publish your skill in the portable
+[Agent Plugins v1.0.0](https://agent-plugins.org/specification) layout
+(root `plugin.json` + `skills/<name>/SKILL.md`, `.sig` sidecar alongside —
+see [SPEC §8](https://skillx.md/spec.md)) so any spec-compliant client can
+install it. A bare signed `SKILL.md` URL remains fully sufficient for
+listing; packaging is recommended, never required.
+
 ## Invariants
 
 - **The log is append-only.** Existing lines are never edited or removed —
