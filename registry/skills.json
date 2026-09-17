@@ -1,68 +1,84 @@
 {
-  "$schema": "https://skillx.md/schemas/skills.v1.json",
-  "updated_at": "2026-08-04T20:32:36Z",
-  "skills": [
-    {
-      "name": "adr-authoring",
-      "description": "Write a rigorous Architecture Decision Record (ADR) that captures a single significant decision, the alternatives weighed, the consequences accepted, and a concrete rollback path.",
-      "version": "1.0.0",
-      "url": "https://skillx.md/skills/adr-authoring/SKILL.md",
-      "sig": "https://skillx.md/skills/adr-authoring/SKILL.md.sig",
-      "ard": "https://skillx.md/skills/adr-authoring/ard.json",
-      "homepage": "https://skillx.md/skills/adr-authoring/",
-      "sha256": "aca2103a89ddcb67b2f316564cc4d03f124c8da2438670f703671adc1aba6582",
-      "publisher": {
-        "kid": "did:web:skillx.md#skillx-2026",
-        "handle": "/skillx/registry",
-        "verified": true
-      },
-      "log_seq": 3
-    },
-    {
-      "name": "skillx-verify",
-      "description": "Verify the signature and publisher identity of any agent skill (SKILL.md) before installing or executing it.",
-      "version": "1.0.0",
-      "url": "https://skillx.md/skills/skillx-verify/SKILL.md",
-      "sig": "https://skillx.md/skills/skillx-verify/SKILL.md.sig",
-      "ard": "https://skillx.md/skills/skillx-verify/ard.json",
-      "homepage": "https://skillx.md/skills/skillx-verify/",
-      "sha256": "0cd2ff8a6ead4a8bee16e3d7125ad0cf296e645baa2caa55da174df2498933e7",
-      "publisher": {
-        "kid": "did:web:skillx.md#skillx-2026",
-        "handle": "/skillx/registry",
-        "verified": true
-      },
-      "log_seq": 2
-    },
-    {
-      "name": "user-agency-web-identity",
-      "description": "Read and act on portable identity surfaces at username.md and about-me.md.",
-      "version": "1.0.0",
-      "url": "https://username.md/SKILL.md",
-      "sig": "https://username.md/SKILL.md.sig",
-      "sha256": "2dfef1e15468e04d56985b06ce2c7a6dff3b66f6ad4af5f4c8222755dcf15d8a",
-      "publisher": {
-        "kid": "did:web:username.md#skillx-2026",
-        "handle": "/username/registry",
-        "verified": true
-      },
-      "log_seq": 1
-    },
-    {
-      "name": "glossary-keeper",
-      "description": "Build and maintain a living organizational glossary that humans and AI agents can cite — novel-term capture, deep-linkable anchors, and curated public builds that never leak internal vocabulary.",
-      "version": "1.0.0",
-      "url": "https://skillx.md/skills/glossary-keeper/SKILL.md",
-      "sig": "https://skillx.md/skills/glossary-keeper/SKILL.md.sig",
-      "ard": "https://skillx.md/skills/glossary-keeper/ard.json",
-      "homepage": "https://skillx.md/skills/glossary-keeper/",
-      "sha256": "6cf0d069661798711f164c32473b7b632e528ecf0c473a09cf65ab7c57580682",
-      "publisher": {
-        "kid": "did:web:skillx.md#skillx-2026",
-        "handle": "/skillx/registry",
-        "verified": true
-      },
-      "log_seq": 4
-    }
-  ]
+ "$schema": "https://skillx.md/schemas/skills.v1.json",
+ "updated_at": "2026-09-11T11:43:33Z",
+ "skills": [
+  {
+   "name": "procedural-graphs",
+   "description": "Build, use, and evolve Procedural Graphs \u2014 directed graphs of (procedure, relation, procedure) triples that tell an agent what to do next, with soft step-level guidance and a validation-gated self-evolution loop (arXiv:2609.09153).",
+   "version": "1.0.0",
+   "url": "https://skillx.md/skills/procedural-graphs/SKILL.md",
+   "sig": "https://skillx.md/skills/procedural-graphs/SKILL.md.sig",
+   "ard": "https://skillx.md/skills/procedural-graphs/ard.json",
+   "homepage": "https://skillx.md/skills/procedural-graphs/",
+   "sha256": "a707abc8a2cfa685a561ea9385f84ee4152e14bff54acb5540126a8fb01d82e7",
+   "publisher": {
+    "kid": "did:web:skillx.md#skillx-2026",
+    "handle": "/skillx/registry",
+    "verified": true
+   },
+   "log_seq": 5
+  },
+  {
+   "name": "adr-authoring",
+   "description": "Write a rigorous Architecture Decision Record (ADR) that captures a single significant decision, the alternatives weighed, the consequences accepted, and a concrete rollback path.",
+   "version": "1.0.0",
+   "url": "https://skillx.md/skills/adr-authoring/SKILL.md",
+   "sig": "https://skillx.md/skills/adr-authoring/SKILL.md.sig",
+   "ard": "https://skillx.md/skills/adr-authoring/ard.json",
+   "homepage": "https://skillx.md/skills/adr-authoring/",
+   "sha256": "aca2103a89ddcb67b2f316564cc4d03f124c8da2438670f703671adc1aba6582",
+   "publisher": {
+    "kid": "did:web:skillx.md#skillx-2026",
+    "handle": "/skillx/registry",
+    "verified": true
+   },
+   "log_seq": 3
+  },
+  {
+   "name": "skillx-verify",
+   "description": "Verify the signature and publisher identity of any agent skill (SKILL.md) before installing or executing it.",
+   "version": "1.0.0",
+   "url": "https://skillx.md/skills/skillx-verify/SKILL.md",
+   "sig": "https://skillx.md/skills/skillx-verify/SKILL.md.sig",
+   "ard": "https://skillx.md/skills/skillx-verify/ard.json",
+   "homepage": "https://skillx.md/skills/skillx-verify/",
+   "sha256": "0cd2ff8a6ead4a8bee16e3d7125ad0cf296e645baa2caa55da174df2498933e7",
+   "publisher": {
+    "kid": "did:web:skillx.md#skillx-2026",
+    "handle": "/skillx/registry",
+    "verified": true
+   },
+   "log_seq": 2
+  },
+  {
+   "name": "user-agency-web-identity",
+   "description": "Read and act on portable identity surfaces at username.md and about-me.md.",
+   "version": "1.0.0",
+   "url": "https://username.md/SKILL.md",
+   "sig": "https://username.md/SKILL.md.sig",
+   "sha256": "2dfef1e15468e04d56985b06ce2c7a6dff3b66f6ad4af5f4c8222755dcf15d8a",
+   "publisher": {
+    "kid": "did:web:username.md#skillx-2026",
+    "handle": "/username/registry",
+    "verified": true
+   },
+   "log_seq": 1
+  },
+  {
+   "name": "glossary-keeper",
+   "description": "Build and maintain a living organizational glossary that humans and AI agents can cite \u2014 novel-term capture, deep-linkable anchors, and curated public builds that never leak internal vocabulary.",
+   "version": "1.0.0",
+   "url": "https://skillx.md/skills/glossary-keeper/SKILL.md",
+   "sig": "https://skillx.md/skills/glossary-keeper/SKILL.md.sig",
+   "ard": "https://skillx.md/skills/glossary-keeper/ard.json",
+   "homepage": "https://skillx.md/skills/glossary-keeper/",
+   "sha256": "6cf0d069661798711f164c32473b7b632e528ecf0c473a09cf65ab7c57580682",
+   "publisher": {
+    "kid": "did:web:skillx.md#skillx-2026",
+    "handle": "/skillx/registry",
+    "verified": true
+   },
+   "log_seq": 4
+  }
+ ]
 }
