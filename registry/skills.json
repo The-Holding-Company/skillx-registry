@@ -1,6 +1,6 @@
 {
  "$schema": "https://skillx.md/schemas/skills.v1.json",
- "updated_at": "2026-09-11T11:43:33Z",
+ "updated_at": "2026-10-15T13:37:31Z",
  "skills": [
   {
    "name": "procedural-graphs",
@@ -53,16 +53,16 @@
   {
    "name": "user-agency-web-identity",
    "description": "Read and act on portable identity surfaces at username.md and about-me.md.",
-   "version": "1.0.0",
+   "version": "1.1.0",
    "url": "https://username.md/SKILL.md",
    "sig": "https://username.md/SKILL.md.sig",
-   "sha256": "2dfef1e15468e04d56985b06ce2c7a6dff3b66f6ad4af5f4c8222755dcf15d8a",
+   "sha256": "cfa25ce9a469cad04fd139bf7825f3eca3095462ec11ff343377fd6c961e8fa0",
    "publisher": {
     "kid": "did:web:username.md#skillx-2026",
     "handle": "/username/registry",
     "verified": true
    },
-   "log_seq": 1
+   "log_seq": 6
   },
   {
    "name": "glossary-keeper",
