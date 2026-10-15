@@ -57,6 +57,13 @@ scripts/add_entry.py       Turns a verified skill URL into a registry entry + lo
 
 ## Notes for maintainers
 
+- The daily **drift monitor** (full sweep in `verify-registry.yml`) classifies
+  every failure (`resigned`, `kid-mismatch`, `invalid`, `unlogged`,
+  `unreachable` — see `scripts/verify_registry.py`). Benign re-signs — the
+  publisher re-published under the *same registered key* without
+  re-registering — get an auto-opened `heal/drift-*` PR (merge = re-published);
+  everything else stays red for a human. Every failure opens/updates a
+  `drift-monitor` alert issue, which closes itself on the next green sweep.
 - Bot-opened PRs (from the submission workflow) don't retrigger
   `pull_request` CI because they're pushed with `GITHUB_TOKEN`; the submit
   workflow runs the full `verify_registry.py` pass itself and attaches the

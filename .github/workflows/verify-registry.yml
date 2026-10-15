@@ -47,11 +47,20 @@ jobs:
             --retries 6 --retry-wait 20
 
   # Scheduled/manual full sweep: verify every entry. Drift here is a real
-  # incident (a logged artifact's bytes changed), so this run failing is the
-  # signal to alert on.
+  # incident (a logged artifact's bytes changed). Failures are routed, not
+  # just left red: benign re-signs (same publisher key, new content) get an
+  # auto-opened heal PR — human merge is still the publish gate — and every
+  # failure opens/updates a `drift-monitor` alert issue, closed on recovery.
   full-sweep:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -59,4 +68,83 @@ jobs:
           python-version: "3.12"
       - run: pip install cryptography
       - name: Verify all entries (drift monitor)
-        run: python3 scripts/verify_registry.py --retries 3 --retry-wait 20
+        run: |
+          python3 scripts/verify_registry.py --retries 3 --retry-wait 20 \
+            --report /tmp/drift-report.json --report-md /tmp/drift-report.md
+
+      - name: Open heal PR for benign re-signs
+        if: failure()
+        run: |
+          [ -f /tmp/drift-report.json ] || { echo "no report produced"; exit 0; }
+          OPEN_HEAL=$(gh pr list --state open --json headRefName \
+            --jq '[.[] | select(.headRefName | startswith("heal/drift"))] | length')
+          if [ "$OPEN_HEAL" != "0" ]; then
+            echo "a heal/drift PR is already open; not opening another"
+            exit 0
+          fi
+          python3 scripts/heal_resigned.py /tmp/drift-report.json
+          if [ -z "$(git status --porcelain registry log)" ]; then
+            echo "nothing auto-healable in this failure"
+            exit 0
+          fi
+          # Re-run the gate locally against what we just staged — the bot PR
+          # won't retrigger pull_request CI (GITHUB_TOKEN push), so prove the
+          # heal verifies here and attach the evidence to the PR.
+          git add registry log
+          python3 scripts/verify_registry.py --changed-only --base HEAD \
+            --retries 2 --retry-wait 15 | tee /tmp/heal-verify.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="heal/drift-${GITHUB_RUN_ID}"
+          git checkout -b "$BRANCH"
+          git commit -m "registry: re-register validly re-signed artifacts (drift heal)"
+          git push origin "$BRANCH"
+          {
+            echo "The daily drift monitor found entries whose live artifacts were"
+            echo "**validly re-signed by their registered publisher** but never"
+            echo "re-registered. This PR appends the new transparency-log lines and"
+            echo "points the registry at the live digests. **Merge = re-published.**"
+            echo
+            cat /tmp/drift-report.md
+            echo
+            echo '```'
+            cat /tmp/heal-verify.txt
+            echo '```'
+            echo
+            echo "Source run: $RUN_URL"
+          } > /tmp/heal-pr-body.md
+          gh pr create --head "$BRANCH" \
+            --title "registry: re-register validly re-signed artifacts (drift heal)" \
+            --body-file /tmp/heal-pr-body.md
+
+      - name: Open or update drift alert issue
+        if: failure()
+        run: |
+          gh label create drift-monitor --force --color D93F0B \
+            --description "Daily registry drift monitor alerts"
+          {
+            if [ -f /tmp/drift-report.md ]; then cat /tmp/drift-report.md
+            else echo "The sweep failed before producing a report — see the run log."
+            fi
+            echo
+            echo "Failing run: $RUN_URL"
+          } > /tmp/alert-body.md
+          NUM=$(gh issue list --label drift-monitor --state open \
+            --json number --jq '.[0].number')
+          if [ -z "$NUM" ]; then
+            gh issue create --label drift-monitor \
+              --title "Drift monitor failing: registry no longer matches live artifacts" \
+              --body-file /tmp/alert-body.md
+          else
+            gh issue comment "$NUM" --body-file /tmp/alert-body.md
+          fi
+
+      - name: Close drift alert issue on recovery
+        if: success()
+        run: |
+          NUM=$(gh issue list --label drift-monitor --state open \
+            --json number --jq '.[0].number')
+          if [ -n "$NUM" ]; then
+            gh issue close "$NUM" \
+              --comment "Full sweep is green again ($RUN_URL) — closing."
+          fi
